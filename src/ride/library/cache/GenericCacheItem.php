@@ -1,8 +1,8 @@
 <?php
 
-namespace pallo\library\cache;
+namespace ride\library\cache;
 
-use pallo\library\cache\exception\CacheException;
+use ride\library\cache\exception\CacheException;
 /**
  * Generic implementation of a caching object
  */

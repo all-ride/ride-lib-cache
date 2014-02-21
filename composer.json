@@ -1,6 +1,6 @@
 {
-    "name": "pallo/lib-cache",
-    "description": "Cache library of the Pallo framework.",
+    "name": "ride/lib-cache",
+    "description": "Cache library of the Ride framework.",
     "license": "MIT",
     "version": "0.1.1",
     "authors": [
@@ -10,11 +10,11 @@
         }
     ],
     "require": {
-        "pallo/lib-system": ">=0.1.0"
+        "ride/lib-system": ">=0.1.0"
     },     
     "autoload": {
         "psr-0": {
-            "pallo\\library\\cache\\": ["src/", "test/src/"]
+            "ride\\library\\cache\\": ["src/", "test/src/"]
         }
     }    
 }

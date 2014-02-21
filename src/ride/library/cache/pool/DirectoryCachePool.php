@@ -1,9 +1,9 @@
 <?php
 
-namespace pallo\library\cache\pool;
+namespace ride\library\cache\pool;
 
-use pallo\library\cache\CacheItem;
-use pallo\library\system\file\File;
+use ride\library\cache\CacheItem;
+use ride\library\system\file\File;
 
 use \Exception;
 
@@ -15,14 +15,14 @@ class DirectoryCachePool extends AbstractCachePool {
 
     /**
      * Directory of the cache
-     * @var pallo\library\system\file\File
+     * @var ride\library\system\file\File
      */
     protected $directory;
 
     /**
      * Constructs a new directory cache pool implementation
-     * @param pallo\library\system\file\File $directory Directory for the pool
-     * @param pallo\library\cache\CacheItem $emptyCacheItem Empty cache item to
+     * @param ride\library\system\file\File $directory Directory for the pool
+     * @param ride\library\cache\CacheItem $emptyCacheItem Empty cache item to
      * clone for a new cache item
      * @return null
      */
@@ -35,7 +35,7 @@ class DirectoryCachePool extends AbstractCachePool {
 
     /**
      * Sets an item to this pool
-     * @param pallo\library\cache\CacheItem $item
+     * @param ride\library\cache\CacheItem $item
      * @return null
      */
     public function set(CacheItem $item) {
@@ -52,7 +52,7 @@ class DirectoryCachePool extends AbstractCachePool {
     /**
      * Gets an item from this pool
      * @param string $key Key of the cached item
-     * @return pallo\library\cache\CacheItem Instance of the cached item
+     * @return ride\library\cache\CacheItem Instance of the cached item
      */
     public function get($key) {
         $cacheFile = $this->directory->getChild($key);

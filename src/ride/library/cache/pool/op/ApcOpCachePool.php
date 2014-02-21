@@ -1,19 +1,19 @@
 <?php
 
-namespace pallo\library\cache\pool\op;
+namespace ride\library\cache\pool\op;
 
-use pallo\library\cache\exception\CacheException;
-use pallo\library\cache\pool\AbstractCachePool;
-use pallo\library\cache\CacheItem;
+use ride\library\cache\exception\CacheException;
+use ride\library\cache\pool\AbstractCachePool;
+use ride\library\cache\CacheItem;
 
 /**
- * XCache implementation for a opcode cache
+ * APC implementation for a opcode cache
  */
-class XCacheOpCachePool extends AbstractCachePool implements OpCachePool {
+class ApcOpCachePool extends AbstractCachePool implements OpCachePool {
 
     /**
-     * Constructs a new XCache pool
-     * @param pallo\library\cache\CacheItem $emptyCacheItem Empty cache item to
+     * Constructs a new XCache facade
+     * @param ride\library\cache\CacheItem $emptyCacheItem Empty cache item to
      * clone for a new cache item
      * @return null
      * @throws \Exception when the xcache functions are not available
@@ -21,8 +21,8 @@ class XCacheOpCachePool extends AbstractCachePool implements OpCachePool {
     public function __construct(CacheItem $emptyCacheItem = null) {
         parent::__construct($emptyCacheItem);
 
-        if (!function_exists('xcache_get')) {
-            throw new CacheException('Could not create the XCache implementation. XCache is not installed or not enabled.');
+        if (!function_exists('apc_fetch')) {
+            throw new CacheException('Could not create the APC implementation. APC is not installed or not enabled.');
         }
     }
 
@@ -33,7 +33,10 @@ class XCacheOpCachePool extends AbstractCachePool implements OpCachePool {
      * @return mixed New value of the variable
      */
     public function increase($key, $step = 1) {
-        return xcache_inc($key, $step);
+        // make sure the variable exists
+        apc_add($key, 0);
+
+        return apc_inc($key, $step);
     }
 
     /**
@@ -43,12 +46,15 @@ class XCacheOpCachePool extends AbstractCachePool implements OpCachePool {
      * @return mixed New value of the variable
      */
     public function decrease($key, $step = 1) {
-        return xcache_dec($key, $step);
+        // make sure the variable exists
+        apc_add($key, 0);
+
+        return apc_dec($key, $step);
     }
 
     /**
      * Sets an item to this pool
-     * @param pallo\library\cache\CacheItem $item
+     * @param ride\library\cache\CacheItem $item
      * @return null
      */
     public function set(CacheItem $item) {
@@ -56,28 +62,23 @@ class XCacheOpCachePool extends AbstractCachePool implements OpCachePool {
             return;
         }
 
-        $value = serialize($item);
-
-        xcache_set($item->getKey(), $value, $item->getTtl());
+        apc_store($item->getKey(), $item, $item->getTtl());
     }
 
     /**
      * Gets an item from this pool
      * @param string $key Key of the cached item
-     * @return pallo\library\cache\CacheItem Instance of the cached item
+     * @return ride\library\cache\CacheItem Instance of the cached item
      */
     public function get($key) {
-        if (xcache_isset($key)) {
-            $value = xcache_get($key);
-
-            try {
-                $item = unserialize($value);
-            } catch (Exception $e) {
-                $item = $this->create($key);
-                $item->setValue($value);
-            }
-        } else {
+        $value = apc_fetch($key, $success);
+        if (!$success) {
             $item = $this->create($key);
+        } elseif (!$value instanceof CacheItem) {
+            $item = $this->create($key);
+            $item->setValue($value);
+        } else {
+            $item = $value;
         }
 
         return $item;
@@ -91,9 +92,10 @@ class XCacheOpCachePool extends AbstractCachePool implements OpCachePool {
      */
     public function flush($key = null) {
         if ($key !== null) {
-            xcache_unset($key);
+            apc_add($key, 0);
+            apc_delete($key);
         } else {
-            xcache_clear();
+            apc_clear_cache();
         }
     }
 

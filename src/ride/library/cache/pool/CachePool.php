@@ -1,8 +1,8 @@
 <?php
 
-namespace pallo\library\cache\pool;
+namespace ride\library\cache\pool;
 
-use pallo\library\cache\CacheItem;
+use ride\library\cache\CacheItem;
 
 /**
  * Interface for a cache pool. This is the storage or backend of a cache.
@@ -12,14 +12,14 @@ interface CachePool {
     /**
      * Creates a item for this pool
      * @param string $key Key of the cached item
-     * @return pallo\library\cache\CacheItem New instance of a cache item for
+     * @return ride\library\cache\CacheItem New instance of a cache item for
      * the provided key
      */
     public function create($key);
 
     /**
      * Sets an item to this pool
-     * @param pallo\library\cache\CacheItem $item
+     * @param ride\library\cache\CacheItem $item
      * @return null
      */
     public function set(CacheItem $item);
@@ -27,7 +27,7 @@ interface CachePool {
     /**
      * Gets an item from this pool
      * @param string $key Key of the cached item
-     * @return pallo\library\cache\CacheItem Instance of the cached item
+     * @return ride\library\cache\CacheItem Instance of the cached item
      */
     public function get($key);
 

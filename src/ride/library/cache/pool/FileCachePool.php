@@ -1,9 +1,9 @@
 <?php
 
-namespace pallo\library\cache\pool;
+namespace ride\library\cache\pool;
 
-use pallo\library\cache\CacheItem;
-use pallo\library\system\file\File;
+use ride\library\cache\CacheItem;
+use ride\library\system\file\File;
 
 use \Exception;
 
@@ -16,7 +16,7 @@ class FileCachePool extends AbstractCachePool {
 
     /**
      * File to store the values
-     * @var pallo\library\system\file\File
+     * @var ride\library\system\file\File
      */
     protected $file;
 
@@ -28,8 +28,8 @@ class FileCachePool extends AbstractCachePool {
 
     /**
      * Constructs a new file cache pool
-     * @param pallo\library\system\file\File $file File to store the values
-     * @param pallo\library\cache\CacheItem $emptyCacheItem Empty cache item to
+     * @param ride\library\system\file\File $file File to store the values
+     * @param ride\library\cache\CacheItem $emptyCacheItem Empty cache item to
      * clone for a new cache item
      * @return null
      */
@@ -54,7 +54,7 @@ class FileCachePool extends AbstractCachePool {
 
     /**
      * Sets an item to this pool
-     * @param pallo\library\cache\CacheItem $item
+     * @param ride\library\cache\CacheItem $item
      * @return null
      */
     public function set(CacheItem $item) {
@@ -72,7 +72,7 @@ class FileCachePool extends AbstractCachePool {
     /**
      * Gets an item from this pool
      * @param string $key Key of the cached item
-     * @return pallo\library\cache\CacheItem|null Instance of the cached item if
+     * @return ride\library\cache\CacheItem|null Instance of the cached item if
      * found, null otherwise
      */
     public function get($key) {

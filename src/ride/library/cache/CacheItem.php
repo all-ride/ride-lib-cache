@@ -1,6 +1,6 @@
 <?php
 
-namespace pallo\library\cache;
+namespace ride\library\cache;
 
 /**
  * Interface for a caching object
