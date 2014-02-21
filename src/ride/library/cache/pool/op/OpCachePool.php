@@ -1,8 +1,8 @@
 <?php
 
-namespace pallo\library\cache\pool\op;
+namespace ride\library\cache\pool\op;
 
-use pallo\library\cache\pool\CachePool;
+use ride\library\cache\pool\CachePool;
 
 /**
  * Interface for the opcode cache implementation
