@@ -1,6 +1,6 @@
-# Pallo: Cache Library
+# Ride: Cache Library
 
-Cache library of the PHP Pallo framework.
+Cache library of the PHP Ride framework.
 
 ## CacheItem
 
@@ -13,11 +13,11 @@ A _CachePool_ is the backend or storage of your cache items.
 
 Available implementations:
 
-* pallo\library\cache\pool\DirectoryCachePool: Cache directory with one file per cached item
-* pallo\library\cache\pool\FileCachePool: one file for the complete pool
-* pallo\library\cache\pool\op\ApcOpCachePool: APC implementation
-* pallo\library\cache\pool\op\MemcacheOpCachePool: Memcache implementation
-* pallo\library\cache\pool\op\XCacheOpCachePool: XCache implementation
+* ride\library\cache\pool\DirectoryCachePool: Cache directory with one file per cached item
+* ride\library\cache\pool\FileCachePool: one file for the complete pool
+* ride\library\cache\pool\op\ApcOpCachePool: APC implementation
+* ride\library\cache\pool\op\MemcacheOpCachePool: Memcache implementation
+* ride\library\cache\pool\op\XCacheOpCachePool: XCache implementation
 
 ## Code Sample
 
@@ -25,8 +25,8 @@ Check the following code sample to see how the cache should be used:
 
     <?php
 
-    use pallo\library\cache\pool\DirectoryCachePool;    
-    use pallo\library\system\System;
+    use ride\library\cache\pool\DirectoryCachePool;    
+    use ride\library\system\System;
     
     $system = new System();
     $cacheDirectory = $system->getFileSystem()->getFile('/path/to/cache');
@@ -51,8 +51,8 @@ When you warm up your cache in another place, you can easily create your cache i
 
     <?php
 
-    use pallo\library\cache\pool\DirectoryCachePool;    
-    use pallo\library\system\System;
+    use ride\library\cache\pool\DirectoryCachePool;    
+    use ride\library\system\System;
     
     $system = new System();
     $cacheDirectory = $system->getFileSystem()->getFile('/path/to/cache');
