@@ -19,7 +19,7 @@ class MemcacheOpCachePool extends AbstractCachePool implements OpCachePool {
 
     /**
      * Constructs a new Memcache facade
-     * @param ride\library\cache\CacheItem $emptyCacheItem Empty cache item to
+     * @param \ride\library\cache\CacheItem $emptyCacheItem Empty cache item to
      * clone for a new cache item
      * @return null
      * @throws \Exception when the xcache functions are not available
@@ -66,7 +66,7 @@ class MemcacheOpCachePool extends AbstractCachePool implements OpCachePool {
 
     /**
      * Sets an item to this pool
-     * @param ride\library\cache\CacheItem $item
+     * @param \ride\library\cache\CacheItem $item
      * @return null
      */
     public function set(CacheItem $item) {
@@ -80,7 +80,7 @@ class MemcacheOpCachePool extends AbstractCachePool implements OpCachePool {
     /**
      * Gets an item from this pool
      * @param string $key Key of the cached item
-     * @return ride\library\cache\CacheItem Instance of the cached item
+     * @return \ride\library\cache\CacheItem Instance of the cached item
      */
     public function get($key) {
         $value = memcache_get($this->memcache, $key);
