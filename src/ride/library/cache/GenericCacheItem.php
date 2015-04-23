@@ -137,7 +137,7 @@ class GenericCacheItem implements CacheItem {
      * @return null
      */
     public function setTtl($ttl) {
-        $this->setMeta(self::META_TTL, $ttl);
+        $this->setMeta(self::META_TTL, (integer) $ttl);
     }
 
     /**
