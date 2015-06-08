@@ -23,43 +23,47 @@ Available implementations:
 
 Check the following code sample to see how the cache should be used:
 
-    <?php
+```php
+<?php
 
-    use ride\library\cache\pool\DirectoryCachePool;    
-    use ride\library\system\System;
-    
-    $system = new System();
-    $cacheDirectory = $system->getFileSystem()->getFile('/path/to/cache');
-    
-    $cachePool = new DirectoryCachePool($cacheDirectory);
-    
-    $cacheItem = $cachePool->get('item.cache.key');
-    if (!$cacheItem->isValid()) {
-        // some value generation logic
+use ride\library\cache\pool\DirectoryCachePool;    
+use ride\library\system\System;
 
-        $cacheItem->setValue($value);
-        $cacheItem->setTtl(60); // in seconds, optional
-        
-        $cachePool->set($cacheItem);
-    } else {
-        $value = $cacheItem->getValue();
-    }
+$system = new System();
+$cacheDirectory = $system->getFileSystem()->getFile('/path/to/cache');
+
+$cachePool = new DirectoryCachePool($cacheDirectory);
+
+$cacheItem = $cachePool->get('item.cache.key');
+if (!$cacheItem->isValid()) {
+    // some value generation logic
+
+    $cacheItem->setValue($value);
+    $cacheItem->setTtl(60); // in seconds, optional
+    
+    $cachePool->set($cacheItem);
+} else {
+    $value = $cacheItem->getValue();
+}
+```
 
 This code uses the item as returned from the pool to set the cached value.
 
 When you warm up your cache in another place, you can easily create your cache item through the pool:
 
-    <?php
+```php
+<?php
 
-    use ride\library\cache\pool\DirectoryCachePool;    
-    use ride\library\system\System;
-    
-    $system = new System();
-    $cacheDirectory = $system->getFileSystem()->getFile('/path/to/cache');
-    
-    $cachePool = new DirectoryCachePool($cacheDirectory);
-    
-    $cacheItem = $cachePool->create('item.cache.key');
-    $cacheItem->setValue('some cache value');
-    
-    $cachePool->set($cacheItem);
+use ride\library\cache\pool\DirectoryCachePool;    
+use ride\library\system\System;
+
+$system = new System();
+$cacheDirectory = $system->getFileSystem()->getFile('/path/to/cache');
+
+$cachePool = new DirectoryCachePool($cacheDirectory);
+
+$cacheItem = $cachePool->create('item.cache.key');
+$cacheItem->setValue('some cache value');
+
+$cachePool->set($cacheItem);
+```
