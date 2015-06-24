@@ -1,47 +1,28 @@
 <?php
 
-namespace ride\library\cache\pool\op;
+namespace ride\library\cache\pool;
 
 use ride\library\cache\exception\CacheException;
-use ride\library\cache\pool\AbstractCachePool;
 use ride\library\cache\CacheItem;
 
 /**
- * Memcache implementation for a opcode cache
+ * XCache implementation for a opcode cache
  */
-class MemcacheOpCachePool extends AbstractCachePool implements OpCachePool {
+class XCacheOpCachePool extends AbstractTaggableCachePool {
 
     /**
-     * Instance of the memcache connection
-     * @var resource
-     */
-    protected $memcache;
-
-    /**
-     * Constructs a new Memcache facade
+     * Constructs a new XCache pool
      * @param \ride\library\cache\CacheItem $emptyCacheItem Empty cache item to
      * clone for a new cache item
      * @return null
      * @throws \Exception when the xcache functions are not available
      */
-    public function __construct($host, $port, $timeout = 1, CacheItem $emptyCacheItem = null) {
+    public function __construct(CacheItem $emptyCacheItem = null) {
+        if (!function_exists('xcache_get')) {
+            throw new CacheException('Could not create a XCache cache pool: XCache is not installed or not enabled.');
+        }
+
         parent::__construct($emptyCacheItem);
-
-        if (!function_exists('memcache_connect')) {
-            throw new CacheException('Could not create the Memcache implementation. Memcache is not installed or not enabled.');
-        }
-
-        $this->memcache = memcache_connect($host, $port, $timeout);
-    }
-
-    /**
-     * Destructs the Memcache facade
-     * @return null
-     */
-    public function __destruct() {
-        if ($this->memcache) {
-            memcache_close($this->memcache);
-        }
     }
 
     /**
@@ -51,7 +32,7 @@ class MemcacheOpCachePool extends AbstractCachePool implements OpCachePool {
      * @return mixed New value of the variable
      */
     public function increase($key, $step = 1) {
-        return memcache_increment($this->memcache, $key, $step);
+        return xcache_inc($key, $step);
     }
 
     /**
@@ -61,7 +42,7 @@ class MemcacheOpCachePool extends AbstractCachePool implements OpCachePool {
      * @return mixed New value of the variable
      */
     public function decrease($key, $step = 1) {
-        return memcache_decrement($this->memcache, $key, $step);
+        return xcache_dec($key, $step);
     }
 
     /**
@@ -74,7 +55,11 @@ class MemcacheOpCachePool extends AbstractCachePool implements OpCachePool {
             return;
         }
 
-        memcache_set($this->memcache, $item->getKey(), $item, 0, $item->getTtl());
+        $value = serialize($item);
+
+        xcache_set($item->getKey(), $value, $item->getTtl());
+
+        parent::set($item);
     }
 
     /**
@@ -83,14 +68,17 @@ class MemcacheOpCachePool extends AbstractCachePool implements OpCachePool {
      * @return \ride\library\cache\CacheItem Instance of the cached item
      */
     public function get($key) {
-        $value = memcache_get($this->memcache, $key);
-        if (!$value) {
-            $item = $this->create($key);
-        } elseif (!$value instanceof CacheItem) {
-            $item = $this->create($key);
-            $item->setValue($value);
+        if (xcache_isset($key)) {
+            $value = xcache_get($key);
+
+            try {
+                $item = unserialize($value);
+            } catch (Exception $e) {
+                $item = $this->create($key);
+                $item->setValue($value);
+            }
         } else {
-            $item = $value;
+            $item = $this->create($key);
         }
 
         return $item;
@@ -104,10 +92,12 @@ class MemcacheOpCachePool extends AbstractCachePool implements OpCachePool {
      */
     public function flush($key = null) {
         if ($key !== null) {
-            memcache_delete($this->memcache, $key);
+            xcache_unset($key);
         } else {
-            memcache_flush($this->memcache);
+            xcache_clear();
         }
+
+        parent::flush($key);
     }
 
 }

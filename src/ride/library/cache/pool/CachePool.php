@@ -5,7 +5,7 @@ namespace ride\library\cache\pool;
 use ride\library\cache\CacheItem;
 
 /**
- * Interface for a cache pool. This is the storage or backend of a cache.
+ * Interface for a cache pool. This is the backend or storage of a cache.
  */
 interface CachePool {
 
@@ -16,6 +16,22 @@ interface CachePool {
      * the provided key
      */
     public function create($key);
+
+    /**
+     * Increases a value in the variable store
+     * @param string $key Key of the variable
+     * @param integer $step Value to increase with
+     * @return mixed New value of the variable
+     */
+    public function increase($key, $step = 1);
+
+    /**
+     * Decreases a value in the variable store
+     * @param string $key Key of the variable
+     * @param integer $step Value to decrease with
+     * @return mixed New value of the variable
+     */
+    public function decrease($key, $step = 1);
 
     /**
      * Sets an item to this pool

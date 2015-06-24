@@ -2,6 +2,7 @@
 
 namespace ride\library\cache\pool;
 
+use ride\library\cache\exception\CacheException;
 use ride\library\cache\CacheItem;
 use ride\library\cache\GenericCacheItem;
 
@@ -50,6 +51,26 @@ abstract class AbstractCachePool implements CachePool {
         $cacheItem->setKey($key);
 
         return $cacheItem;
+    }
+
+    /**
+     * Increases a value in the variable store
+     * @param string $key Key of the variable
+     * @param integer $step Value to increase with
+     * @return mixed New value of the variable
+     */
+    public function increase($key, $step = 1) {
+        throw new CacheException('Increase is not implemented by this cache pool');
+    }
+
+    /**
+     * Decreases a value in the variable store
+     * @param string $key Key of the variable
+     * @param integer $step Value to decrease with
+     * @return mixed New value of the variable
+     */
+    public function decrease($key, $step = 1) {
+        throw new CacheException('Decrease is not implemented by this cache pool');
     }
 
 }

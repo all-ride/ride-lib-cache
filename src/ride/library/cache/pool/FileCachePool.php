@@ -12,7 +12,7 @@ use \Exception;
  * file which is read when the cache is first accessed and written when the
  * cache destructs.
  */
-class FileCachePool extends AbstractCachePool {
+class FileCachePool extends AbstractTaggableCachePool {
 
     /**
      * File to store the values
@@ -34,10 +34,10 @@ class FileCachePool extends AbstractCachePool {
      * @return null
      */
     public function __construct(File $file, CacheItem $emptyCacheItem = null) {
-        parent::__construct($emptyCacheItem);
-
         $this->file = $file;
         $this->values = null;
+
+        parent::__construct($emptyCacheItem);
     }
 
     /**
@@ -45,6 +45,8 @@ class FileCachePool extends AbstractCachePool {
      * @return null
      */
     public function __destruct() {
+        parent::__destruct();
+
         try {
             $this->writeFile();
         } catch (Exception $exception) {
@@ -67,6 +69,8 @@ class FileCachePool extends AbstractCachePool {
         }
 
         $this->values[$item->getKey()] = $item;
+
+        parent::set($item);
     }
 
     /**
@@ -105,6 +109,8 @@ class FileCachePool extends AbstractCachePool {
         } else {
             $this->values = array();
         }
+
+        parent::flush($key);
     }
 
     /**
@@ -135,9 +141,13 @@ class FileCachePool extends AbstractCachePool {
         $parent = $this->file->getParent();
         $parent->create();
 
-        $output = serialize($this->values);
+        if ($this->values) {
+            $output = serialize($this->values);
 
-        $this->file->write($output);
+            $this->file->write($output);
+        } elseif ($this->file->exists()) {
+            $this->file->delete();
+        }
     }
 
 }

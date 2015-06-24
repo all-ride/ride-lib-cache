@@ -6,7 +6,7 @@ use ride\library\cache\exception\CacheException;
 /**
  * Generic implementation of a caching object
  */
-class GenericCacheItem implements CacheItem {
+class GenericCacheItem implements TaggableCacheItem {
 
     /**
      * Name of the creation time meta
@@ -39,6 +39,12 @@ class GenericCacheItem implements CacheItem {
     protected $meta;
 
     /**
+     * Tags this item
+     * @var array|null
+     */
+    protected $tags;
+
+    /**
      * Constructs a new cached item
      * @return null
      */
@@ -46,6 +52,7 @@ class GenericCacheItem implements CacheItem {
         $this->key = null;
         $this->value = null;
         $this->meta = array();
+        $this->tags = null;
 
         $this->isValueUnset = true;
     }
@@ -61,6 +68,11 @@ class GenericCacheItem implements CacheItem {
         }
 
         $this->key = $key;
+
+        if ($this->getTtl()) {
+            // default time to live
+            $this->meta[self::META_CREATED] = time();
+        }
     }
 
     /**
@@ -104,7 +116,7 @@ class GenericCacheItem implements CacheItem {
         if ($value !== null) {
             $this->meta[$key] = $value;
 
-            if ($key == self::META_TTL) {
+            if ($this->key && $key == self::META_TTL && !isset($this->meta[self::META_CREATED])) {
                 $this->meta[self::META_CREATED] = time();
             }
         } elseif (isset($this->meta[$key])) {
@@ -137,6 +149,10 @@ class GenericCacheItem implements CacheItem {
      * @return null
      */
     public function setTtl($ttl) {
+        if (!is_numeric($ttl) || $ttl < 0) {
+            throw new CacheException('Could not set time to live of the cache item: provided time is not a positive number or 0');
+        }
+
         $this->setMeta(self::META_TTL, (integer) $ttl);
     }
 
@@ -145,7 +161,12 @@ class GenericCacheItem implements CacheItem {
      * @return integer Number of seconds to live
      */
     public function getTtl() {
-        return $this->getMeta(self::META_TTL, 0);
+        $ttl = $this->getMeta(self::META_TTL, 0);
+        if (!is_numeric($ttl) || $ttl < 0) {
+            $ttl = 0;
+        }
+
+        return (integer) $ttl;
     }
 
     /**
@@ -167,6 +188,54 @@ class GenericCacheItem implements CacheItem {
         }
 
         return true;
+    }
+
+    /**
+     * Adds a tag to this cache item
+     * @param string $tag Name of the tag
+     * @return null
+     */
+    public function addTag($tag) {
+        if (!is_string($tag) || $tag == '') {
+            throw new CacheException('Could not add tag to the cache item: provided tag is invalid or empty');
+        } elseif ($this->tags === null) {
+            $this->tags = array();
+        }
+
+        $this->tags[$tag] = true;
+    }
+
+    /**
+     * Removes a tag from the cache item
+     * @param string $tag Name of the tag
+     * @return null
+     */
+    public function removeTag($tag) {
+        if (!is_string($tag) || $tag == '') {
+            throw new CacheException('Could not remove tag from the cache item: provided tag is invalid or empty');
+        }
+
+        if (!isset($this->tags[$tag])) {
+            return;
+        }
+
+        unset($this->tags[$tag]);
+
+        if (!$this->tags) {
+            $this->tags = null;
+        }
+    }
+
+    /**
+     * Gets the tags of this cache item
+     * @return array
+     */
+    public function getTags() {
+        if ($this->tags === null) {
+            return array();
+        }
+
+        return array_keys($this->tags);
     }
 
 }
