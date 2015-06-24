@@ -1,29 +1,44 @@
 <?php
 
-namespace ride\library\cache\pool\op;
+namespace ride\library\cache\pool;
 
-use ride\library\cache\exception\CacheException;
-use ride\library\cache\pool\AbstractCachePool;
 use ride\library\cache\CacheItem;
 
+use \Memcache;
+
 /**
- * APC implementation for a opcode cache
+ * Memcache implementation for a opcode cache
  */
-class ApcOpCachePool extends AbstractCachePool implements OpCachePool {
+class MemcacheOpCachePool extends AbstractTaggableCachePool {
 
     /**
-     * Constructs a new XCache facade
+     * Instance of the memcache connection
+     * @var \Memcache
+     */
+    protected $memcache;
+
+    /**
+     * Constructs a new Memcache facade
+     * @param \Memcache $memcache Instance of a Memcache client
      * @param \ride\library\cache\CacheItem $emptyCacheItem Empty cache item to
      * clone for a new cache item
      * @return null
      * @throws \Exception when the xcache functions are not available
      */
-    public function __construct(CacheItem $emptyCacheItem = null) {
-        parent::__construct($emptyCacheItem);
+    public function __construct(Memcache $memcache, CacheItem $emptyCacheItem = null) {
+        $this->memcache = $memcache;
 
-        if (!function_exists('apc_fetch')) {
-            throw new CacheException('Could not create the APC implementation. APC is not installed or not enabled.');
-        }
+        parent::__construct($emptyCacheItem);
+    }
+
+    /**
+     * Closes the Memcache connection
+     * @return null
+     */
+    public function __destruct() {
+        parent::__destruct();
+
+        $this->memcache->close();
     }
 
     /**
@@ -33,10 +48,7 @@ class ApcOpCachePool extends AbstractCachePool implements OpCachePool {
      * @return mixed New value of the variable
      */
     public function increase($key, $step = 1) {
-        // make sure the variable exists
-        apc_add($key, 0);
-
-        return apc_inc($key, $step);
+        return $this->memcache->increment($key, $step);
     }
 
     /**
@@ -46,10 +58,7 @@ class ApcOpCachePool extends AbstractCachePool implements OpCachePool {
      * @return mixed New value of the variable
      */
     public function decrease($key, $step = 1) {
-        // make sure the variable exists
-        apc_add($key, 0);
-
-        return apc_dec($key, $step);
+        return $this->memcache->decrement($key, $step);
     }
 
     /**
@@ -62,7 +71,9 @@ class ApcOpCachePool extends AbstractCachePool implements OpCachePool {
             return;
         }
 
-        apc_store($item->getKey(), $item, $item->getTtl());
+        $this->memcache->set($item->getKey(), $item, 0, $item->getTtl());
+
+        parent::set($item);
     }
 
     /**
@@ -71,8 +82,8 @@ class ApcOpCachePool extends AbstractCachePool implements OpCachePool {
      * @return \ride\library\cache\CacheItem Instance of the cached item
      */
     public function get($key) {
-        $value = apc_fetch($key, $success);
-        if (!$success) {
+        $value = $this->memcache->get($key);
+        if ($value === false) {
             $item = $this->create($key);
         } elseif (!$value instanceof CacheItem) {
             $item = $this->create($key);
@@ -92,11 +103,12 @@ class ApcOpCachePool extends AbstractCachePool implements OpCachePool {
      */
     public function flush($key = null) {
         if ($key !== null) {
-            apc_add($key, 0);
-            apc_delete($key);
+            $this->memcache->delete($key);
         } else {
-            apc_clear_cache();
+            $this->memcache->flush();
         }
+
+        parent::flush($key);
     }
 
 }

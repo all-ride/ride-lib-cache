@@ -8,10 +8,10 @@ use ride\library\system\file\File;
 use \Exception;
 
 /**
- * Directory implementation for a cache pool. Each cache item will be stored in
+ * Directory implementation of a cache pool. Each cache item will be stored in
  * a file in the directory of this pool
  */
-class DirectoryCachePool extends AbstractCachePool {
+class DirectoryCachePool extends AbstractTaggableCachePool {
 
     /**
      * Directory of the cache
@@ -27,10 +27,12 @@ class DirectoryCachePool extends AbstractCachePool {
      * @return null
      */
     public function __construct(File $directory, CacheItem $emptyCacheItem = null) {
-        parent::__construct($emptyCacheItem);
-
+        // make sure directory exists
         $this->directory = $directory;
         $this->directory->create();
+
+        // handle parent logic
+        parent::__construct($emptyCacheItem);
     }
 
     /**
@@ -40,13 +42,18 @@ class DirectoryCachePool extends AbstractCachePool {
      */
     public function set(CacheItem $item) {
         if (!$item->isValid()) {
+            // not a valid item, don't store
             return;
         }
 
         $serializedValue = serialize($item);
 
+        // write to file
         $cacheFile = $this->directory->getChild($item->getKey());
         $cacheFile->write($serializedValue);
+
+        // handle parent logic
+        parent::set($item);
     }
 
     /**
@@ -98,6 +105,9 @@ class DirectoryCachePool extends AbstractCachePool {
                 $cacheFile->delete();
             }
         }
+
+        // handle parent logic
+        parent::flush($key);
     }
 
 }
