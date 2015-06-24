@@ -1,3 +1,7 @@
+# Ride: Cache Library
+
+Cache library of the PHP Ride framework.
+
 ## CacheItem
 
 A _CacheItem_ is the container of your cached value.
@@ -75,5 +79,4 @@ When you warm up your cache in another place, you can easily create your cache i
     $cacheItem->setValue('some cache value');
     
     $cachePool->set($cacheItem);
-    
-    
+
