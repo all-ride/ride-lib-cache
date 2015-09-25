@@ -22,6 +22,10 @@ Available implementations:
 * ride\library\cache\pool\MemcacheCachePool: Memcache implementation
 * ride\library\cache\pool\XCacheCachePool: XCache implementation
 
+## CacheControl
+
+A _CacheControl_ provides an interface to expose the management of your caches to the UI.
+
 ## Code Sample
 
 Check the following code sample to see how the cache should be used:
