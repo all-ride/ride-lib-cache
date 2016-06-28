@@ -4,13 +4,9 @@ namespace ride\library\cache\pool;
 
 use ride\library\system\System;
 
-use \PHPUnit_Framework_TestCase;
-
-class DirectoryCachePoolTest extends PHPUnit_Framework_TestCase {
+class DirectoryCachePoolTest extends AbstractCachePoolTest {
 
     private $directory;
-
-    private $cache;
 
     public function setUp() {
         $system = new System();

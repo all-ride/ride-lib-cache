@@ -73,7 +73,8 @@ class XCacheOpCachePool extends AbstractTaggableCachePool {
 
             try {
                 $item = unserialize($value);
-            } catch (Exception $e) {
+            } catch (Exception $exception) {
+                // not a serialized value, set from somewhere else?
                 $item = $this->create($key);
                 $item->setValue($value);
             }
