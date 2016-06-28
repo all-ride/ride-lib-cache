@@ -86,3 +86,4 @@ $cacheItem = $cachePool->create('item.cache.key');
 $cacheItem->setValue('some cache value');
 
 $cachePool->set($cacheItem);
+```
