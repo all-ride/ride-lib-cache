@@ -66,14 +66,14 @@ class DirectoryCachePool extends AbstractTaggableCachePool {
 
         $item = null;
 
-        if ($cacheFile->exists()) {
-            $serializedValue = $cacheFile->read();
+        try {
+            if ($cacheFile->exists()) {
+                $serializedValue = $cacheFile->read();
 
-            try {
                 $item = unserialize($serializedValue);
-            } catch (Exception $exception) {
-
             }
+        } catch (Exception $exception) {
+
         }
 
         if (!$item) {
