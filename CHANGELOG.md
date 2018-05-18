@@ -1,5 +1,9 @@
 # ride-lib-cache
 
+## [1.1.0] - 2018-05-18
+### Added
+- Added NullCachePool: dummy cache pool to disable a cache
+
 ## [1.0.2] - 2018-03-29
 ### Added
 - DirectoryCachePool: catch around filesystem and not only around serialization
