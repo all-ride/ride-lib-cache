@@ -1,5 +1,9 @@
 # ride-lib-cache
 
+## [1.1.1] - 2018-09-21
+### Updated
+- Catch FileSystemException to avoid crashes while clearing cache
+
 ## [1.1.0] - 2018-05-18
 ### Added
 - Added NullCachePool: dummy cache pool to disable a cache
