@@ -3,6 +3,7 @@
 namespace ride\library\cache\pool;
 
 use ride\library\cache\CacheItem;
+use ride\library\system\exception\FileSystemException;
 use ride\library\system\file\File;
 
 use \Exception;
@@ -97,12 +98,22 @@ class DirectoryCachePool extends AbstractTaggableCachePool {
 
             $cacheFiles = $this->directory->read();
             foreach ($cacheFiles as $cacheFile) {
-                $cacheFile->delete();
+                try {
+                    $cacheFile->delete();
+                } catch (FileSystemException $exception) {
+                    // this exception means that the file could not be deleted, most
+                    // likely because it was deleted previously or the path is wrong.
+                    // thus, we can only flush the key to clear the cache.
+                }
             }
         } else {
             $cacheFile = $this->directory->getChild($key);
             if ($cacheFile->exists()) {
-                $cacheFile->delete();
+                try {
+                    $cacheFile->delete();
+                } catch (FileSystemException $exception) {
+                    // see above
+                }
             }
         }
 
