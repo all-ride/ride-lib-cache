@@ -1,5 +1,7 @@
 # ride-lib-cache
-
+## [1.2.0] - 2023-09-21
+### Updated
+- Use explicit array structure instead of default false
 ## [1.1.1] - 2018-09-21
 ### Updated
 - Catch FileSystemException to avoid crashes while clearing cache
