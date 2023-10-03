@@ -35,7 +35,7 @@ class FileCachePool extends AbstractTaggableCachePool {
      */
     public function __construct(File $file, CacheItem $emptyCacheItem = null) {
         $this->file = $file;
-        $this->values = null;
+        $this->values = [];
 
         parent::__construct($emptyCacheItem);
     }
@@ -64,7 +64,7 @@ class FileCachePool extends AbstractTaggableCachePool {
             return;
         }
 
-        if ($this->values === null) {
+        if (empty($this->values)) {
             $this->readFile();
         }
 
@@ -80,7 +80,7 @@ class FileCachePool extends AbstractTaggableCachePool {
      * found, null otherwise
      */
     public function get($key) {
-        if ($this->values === null) {
+        if (empty($this->values)) {
             $this->readFile();
         }
 
@@ -98,7 +98,7 @@ class FileCachePool extends AbstractTaggableCachePool {
      * @return null
      */
     public function flush($key = null) {
-        if ($this->values === null) {
+        if (empty($this->values)) {
             $this->readFile();
         }
 
@@ -134,7 +134,7 @@ class FileCachePool extends AbstractTaggableCachePool {
      * @return null
      */
     private function writeFile() {
-        if ($this->values === null) {
+        if (empty($this->values)) {
             return;
         }
 
