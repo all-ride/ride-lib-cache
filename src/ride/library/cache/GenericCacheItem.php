@@ -43,6 +43,10 @@ class GenericCacheItem implements TaggableCacheItem {
      * @var array|null
      */
     protected $tags;
+    /**
+     * @var boolean
+     */
+    protected $isValueUnset;
 
     /**
      * Constructs a new cached item
