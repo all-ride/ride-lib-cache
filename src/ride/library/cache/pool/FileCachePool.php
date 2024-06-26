@@ -31,7 +31,6 @@ class FileCachePool extends AbstractTaggableCachePool {
      * @param \ride\library\system\file\File $file File to store the values
      * @param \ride\library\cache\CacheItem $emptyCacheItem Empty cache item to
      * clone for a new cache item
-     * @return null
      */
     public function __construct(File $file, CacheItem $emptyCacheItem = null) {
         $this->file = $file;
@@ -42,7 +41,7 @@ class FileCachePool extends AbstractTaggableCachePool {
 
     /**
      * Writes the cache values to the file
-     * @return null
+     * @return void
      */
     public function __destruct() {
         parent::__destruct();
@@ -57,7 +56,7 @@ class FileCachePool extends AbstractTaggableCachePool {
     /**
      * Sets an item to this pool
      * @param \ride\library\cache\CacheItem $item
-     * @return null
+     * @return void
      */
     public function set(CacheItem $item) {
         if (!$item->isValid()) {
@@ -95,7 +94,7 @@ class FileCachePool extends AbstractTaggableCachePool {
      * Flushes this pool
      * @param string $key Provide a key to only remove the cached item of that
      * key
-     * @return null
+     * @return void
      */
     public function flush($key = null) {
         if (empty($this->values)) {
@@ -115,7 +114,7 @@ class FileCachePool extends AbstractTaggableCachePool {
 
     /**
      * Reads the cache items from the file
-     * @return null
+     * @return void
      */
     private function readFile() {
         if (!$this->file->exists()) {
@@ -126,12 +125,12 @@ class FileCachePool extends AbstractTaggableCachePool {
 
         $serializedValue = $this->file->read();
 
-        $this->values = unserialize($serializedValue);
+        $this->values = unserialize($serializedValue) ?: [];
     }
 
     /**
      * Writes the cache file with all the cache items
-     * @return null
+     * @return void
      */
     private function writeFile() {
         if (empty($this->values)) {

@@ -1,4 +1,5 @@
 {
+    "version": "1.3",
     "name": "ride/lib-cache",
     "description": "Cache library of the Ride framework.",
     "license": "MIT",

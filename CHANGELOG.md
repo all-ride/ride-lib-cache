@@ -1,4 +1,7 @@
 # ride-lib-cache
+## [1.3.0] - 2024-06-26
+### Updated
+- Updated to be compatible with php 8.3
 ## [1.2.0] - 2023-09-21
 ### Updated
 - Use explicit array structure instead of default false
